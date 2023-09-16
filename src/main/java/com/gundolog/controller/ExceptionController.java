@@ -1,5 +1,6 @@
 package com.gundolog.controller;
 
+import com.gundolog.response.ErrorResponse;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +19,9 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public Map<String, String> methodArgumentNotValidExceptionHandler(
+    public ErrorResponse methodArgumentNotValidExceptionHandler(
         MethodArgumentNotValidException e) {
-        // MethodArgumentNotValidException
-        FieldError fieldError = e.getFieldError();
-        String field = fieldError.getField();
-        String message = fieldError.getDefaultMessage();
-        Map<String, String> response = new HashMap<>();
-        response.put(field, message);
-        return response;
+        return new ErrorResponse("400", "잘못된 요청입니다.");
 
     }
 }
