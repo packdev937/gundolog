@@ -1,4 +1,4 @@
-package com.gundolog.entity;
+package com.gundolog.api.entity;
 
 
 import java.time.LocalDateTime;

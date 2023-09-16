@@ -1,6 +1,6 @@
-package com.gundolog.controller;
+package com.gundolog.api.controller;
 
-import com.gundolog.request.PostCreate;
+import com.gundolog.api.request.PostCreate;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

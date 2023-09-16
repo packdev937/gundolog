@@ -1,6 +1,6 @@
-package com.gundolog.controller;
+package com.gundolog.api.controller;
 
-import com.gundolog.response.ErrorResponse;
+import com.gundolog.api.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;

@@ -1,4 +1,4 @@
-package com.gundolog;
+package com.gundolog.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

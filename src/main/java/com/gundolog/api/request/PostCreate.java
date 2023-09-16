@@ -1,4 +1,4 @@
-package com.gundolog.request;
+package com.gundolog.api.request;
 
 import javax.validation.constraints.NotBlank;
 

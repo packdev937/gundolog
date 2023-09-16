@@ -1,6 +1,4 @@
-package com.gundolog.controller;
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.gundolog.api.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

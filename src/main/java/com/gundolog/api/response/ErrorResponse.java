@@ -1,4 +1,4 @@
-package com.gundolog.response;
+package com.gundolog.api.response;
 
 /*
 * {
