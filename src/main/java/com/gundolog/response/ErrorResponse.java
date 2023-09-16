@@ -10,6 +10,8 @@ package com.gundolog.response;
 * }
 * */
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +20,12 @@ import lombok.RequiredArgsConstructor;
 public class ErrorResponse {
     private final String code;
     private final String message;
+    private final Map<String, String> validation = new HashMap<>();
+
+    public void addValidation(String filedName, String errorMessage){
+        this.validation.put(filedName, errorMessage);
+    }
 }
 
-// 에러를 정의하는 다양한 방
+// 에러를 정의하는 다양한 방법
+// Map을 사용하는 것은 지양하는 것이 좋다.
