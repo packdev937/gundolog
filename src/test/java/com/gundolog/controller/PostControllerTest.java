@@ -37,7 +37,17 @@ class PostControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"content\": \"내용입니다.\"}"))
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().string("Hello World"))
+            .andDo(MockMvcResultHandlers.print());
+
+    }
+
+    @Test
+    @DisplayName("/posts 요청시 content 값은 필수다")
+    void test3() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"title\": \"제목입니다.\"}"))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
             .andDo(MockMvcResultHandlers.print());
 
     }
