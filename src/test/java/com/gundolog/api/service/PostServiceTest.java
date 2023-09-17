@@ -33,4 +33,23 @@ class PostServiceTest {
         // then
         Assertions.assertThat(postRepository.count()).isEqualTo(1L);
     }
+
+    @Test
+    @DisplayName("글 1개 조회")
+    void test2() {
+        // given
+        Post post = Post.builder()
+            .title("foo")
+            .content("bar")
+            .build();
+
+        postRepository.save(post);
+
+        // when
+        Post newPost = postService.get(1L);
+
+        // then
+        org.junit.jupiter.api.Assertions.assertEquals("foo", newPost.getTitle());
+        org.junit.jupiter.api.Assertions.assertEquals("bar", newPost.getContent());
+    }
 }
