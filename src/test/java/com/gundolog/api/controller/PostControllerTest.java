@@ -1,6 +1,9 @@
 package com.gundolog.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
+import com.gundolog.api.request.PostCreate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,17 +33,25 @@ class PostControllerTest {
 
     // 다른 테스트의 수행에 의해 테스트 결과가 달라지면 안되기 때문에
     @BeforeEach
-    void clean(){
+    void clean() {
         postRepository.deleteAll();
     }
 
     @Test
     @DisplayName("/posts 요청 시 DB에 값이 저장된다")
     void test1() throws Exception {
+        // Given
+        PostCreate request = new PostCreate();
+        request.setTitle("제목입니다");
+        request.setContent("내용입니다");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(request);
+
         // when
         mockMvc.perform(MockMvcRequestBuilders.post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\": \"제목입니다\", \"content\": \"내용입니다.\"}"))
+                .content(json))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcResultHandlers.print());
 
@@ -48,6 +59,7 @@ class PostControllerTest {
         Assertions.assertThat(postRepository.count()).isEqualTo(1);
     }
     // Test에서 생성되는 Repository는 무엇일까?
+    // PostCreate에 생성자를 만들었더니 Mapping 에러가 발생
 
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다")
@@ -69,6 +81,23 @@ class PostControllerTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
             .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다."))
+            .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("/get 요청시 글을 조회할 수 있다")
+    void test4() throws Exception {
+        // given
+        Post post = Post.builder()
+            .title("foo")
+            .content("bar")
+            .build();
+        postRepository.save(post);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk())
             .andDo(MockMvcResultHandlers.print());
     }
 }
