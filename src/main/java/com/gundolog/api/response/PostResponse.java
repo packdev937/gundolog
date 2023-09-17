@@ -1,9 +1,8 @@
 package com.gundolog.api.response;
 
+import com.gundolog.api.entity.Post;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
@@ -18,9 +17,9 @@ public class PostResponse {
         return this.title.substring(0, Math.min(this.title.length(), 10));
     }
 
-    public PostResponse(Long id, String title, String content) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
+    public PostResponse(Post post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
     }
 }
