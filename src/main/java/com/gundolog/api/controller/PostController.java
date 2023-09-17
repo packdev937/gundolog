@@ -2,6 +2,7 @@ package com.gundolog.api.controller;
 
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.response.PostResponse;
 import com.gundolog.api.service.PostService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public Post get(@PathVariable(name = "postId") Long id) {
+    public PostResponse get(@PathVariable(name = "postId") Long id) {
         return postService.get(id);
     }
 }

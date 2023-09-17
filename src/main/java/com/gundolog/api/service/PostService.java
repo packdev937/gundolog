@@ -3,6 +3,7 @@ package com.gundolog.api.service;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,18 @@ public class PostService {
         postRepository.save(newPost);
     }
 
-    public Post get(Long postId) {
+    public PostResponse get(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
             () -> new IllegalArgumentException("존재하지 않는 글입니다")
         );
 
-        return post;
+        PostResponse response = PostResponse.builder()
+            .title(post.getTitle())
+            .content(post.getContent())
+            .id(post.getId())
+            .build();
+
+        return response;
     }
 
 }
