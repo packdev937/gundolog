@@ -13,6 +13,11 @@ public class PostResponse {
     private final String title;
     private final String content;
 
+    // 정책에 맞는 반환 값 설정
+    public String getTitle() {
+        return this.title.substring(0, Math.min(this.title.length(), 10));
+    }
+
     public PostResponse(Long id, String title, String content) {
         this.id = id;
         this.title = title;
