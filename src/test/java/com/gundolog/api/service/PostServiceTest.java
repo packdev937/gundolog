@@ -6,6 +6,7 @@ import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -83,6 +84,33 @@ class PostServiceTest {
         // then
         org.junit.jupiter.api.Assertions.assertEquals("1234567891", response.getTitle());
         org.junit.jupiter.api.Assertions.assertEquals("bar", response.getContent());
+    }
+
+    @Test
+    @DisplayName("글 여러 개 조회")
+    void test4() {
+        // given
+        Post post1 = Post.builder()
+            .title("foo1")
+            .content("bar")
+            .createdDate(LocalDateTime.now())
+            .updatedDate(LocalDateTime.now())
+            .build();
+
+        Post post2 = Post.builder()
+            .title("foo2")
+            .content("bar")
+            .createdDate(LocalDateTime.now())
+            .updatedDate(LocalDateTime.now())
+            .build();
+
+        postRepository.save(post1);
+        postRepository.save(post2);
+        // when
+
+        List<PostResponse> posts = postService.getList();
+        // then
+        org.junit.jupiter.api.Assertions.assertEquals(2, posts.size());
     }
 }
 
