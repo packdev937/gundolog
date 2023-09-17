@@ -5,12 +5,12 @@ import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -85,7 +85,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/get 요청시 글을 조회할 수 있다")
+    @DisplayName("/posts/{postId} 요청시 글을 조회할 수 있다")
     void test4() throws Exception {
         // given
         Post post = Post.builder()
@@ -103,4 +103,33 @@ class PostControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("bar"))
             .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("/posts 요청 시 여러 글을 조회 할 수 있다.")
+    void test5() throws Exception {
+        // given
+        Post post1 = Post.builder()
+            .title("foo1")
+            .content("bar")
+            .build();
+
+        Post post2 = Post.builder()
+            .title("foo2")
+            .content("bar")
+            .build();
+        postRepository.save(post1);
+        postRepository.save(post2);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(2)))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("foo1"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("foo2"))
+            .andDo(MockMvcResultHandlers.print());
+    }
 }
+
+// jsonPath() 메서드의 여러 함수
+// Matchers()와 MockMvc는 어떻게 동작하는가?
