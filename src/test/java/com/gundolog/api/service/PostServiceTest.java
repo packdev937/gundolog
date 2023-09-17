@@ -2,9 +2,11 @@ package com.gundolog.api.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,11 @@ class PostServiceTest {
 
     @Autowired
     PostRepository postRepository;
+
+    @BeforeEach
+    void clear() {
+        postRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("글 적성")
