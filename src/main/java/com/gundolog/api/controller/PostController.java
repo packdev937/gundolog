@@ -7,11 +7,12 @@ import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -34,8 +35,8 @@ public class PostController {
 
     // 글이 너무 많 경우 -> 비용이 많이 들고, DB글 모두를 조회하는 경우 DB가 뻗을 수 있으며, 시간, 트래픽 비용등이 많이 발생한다
     @GetMapping("/posts")
-    public List<PostResponse> getList(@RequestParam int page) {
-        return postService.getList(page);
+    public List<PostResponse> getList(@PageableDefault(size = 5) Pageable pageable) {
+        return postService.getList(pageable);
     }
 }
 

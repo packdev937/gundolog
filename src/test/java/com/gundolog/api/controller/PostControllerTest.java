@@ -1,5 +1,11 @@
 package com.gundolog.api.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
@@ -16,9 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 // @SpringBootTest를 달아주면 mockMvc는 안되고, WebMvcTest를 달아주면 Spring 오류가 나는 현상
 // AutoConfigureMockMvc로 해결
@@ -51,11 +54,11 @@ class PostControllerTest {
         String json = objectMapper.writeValueAsString(request);
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcResultHandlers.print());
+            .andExpect(status().isOk())
+            .andDo(print());
 
         // then
         Assertions.assertThat(postRepository.count()).isEqualTo(1);
@@ -66,24 +69,24 @@ class PostControllerTest {
     @Test
     @DisplayName("/posts 요청시 title 값은 필수다")
     void test2() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"content\": \"내용입니다.\"}"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print());
+            .andExpect(status().isBadRequest())
+            .andDo(print());
 
     }
 
     @Test
     @DisplayName("/posts 요청시 content 값은 필수다")
     void test3() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/posts")
+        mockMvc.perform(post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"제목입니다.\"}"))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다."))
-            .andDo(MockMvcResultHandlers.print());
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+            .andDo(print());
     }
 
     @Test
@@ -97,13 +100,13 @@ class PostControllerTest {
         postRepository.save(post);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", post.getId())
+        mockMvc.perform(get("/posts/{postId}", post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(post.getId()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("foo"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("bar"))
-            .andDo(MockMvcResultHandlers.print());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(post.getId()))
+            .andExpect(jsonPath("$.title").value("foo"))
+            .andExpect(jsonPath("$.content").value("bar"))
+            .andDo(print());
     }
 
     @Test
@@ -120,10 +123,11 @@ class PostControllerTest {
         postRepository.saveAll(requestPosts);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=0")
+        mockMvc.perform(get("/posts?page=1&size=5")
                 .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andDo(MockMvcResultHandlers.print());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value((5)))
+            .andDo(print());
     }
 }
 
