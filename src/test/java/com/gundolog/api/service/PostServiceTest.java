@@ -1,12 +1,16 @@
 package com.gundolog.api.service;
 
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,8 +64,8 @@ class PostServiceTest {
         // then
         Post findPost = postRepository.findById(post.getId()).get();
         System.out.println(post.getId());
-        org.junit.jupiter.api.Assertions.assertEquals("foo", findPost.getTitle());
-        org.junit.jupiter.api.Assertions.assertEquals("bar", findPost.getContent());
+        assertEquals("foo", findPost.getTitle());
+        assertEquals("bar", findPost.getContent());
     }
 
     @Test
@@ -82,43 +86,32 @@ class PostServiceTest {
         PostResponse response = postService.get(post.getId());
 
         // then
-        org.junit.jupiter.api.Assertions.assertEquals("1234567891", response.getTitle());
-        org.junit.jupiter.api.Assertions.assertEquals("bar", response.getContent());
+        assertEquals("1234567891", response.getTitle());
+        assertEquals("bar", response.getContent());
     }
 
     @Test
-    @DisplayName("글 여러 개 조회")
+    @DisplayName("글 첫 1페이지 조회")
     void test4() {
         // given
-        Post post1 = Post.builder()
-            .title("foo1")
-            .content("bar")
-            .createdDate(LocalDateTime.now())
-            .updatedDate(LocalDateTime.now())
-            .build();
+        List<Post> requestPosts = IntStream.range(1, 31)
+            .mapToObj(i -> {
+                return Post.builder()
+                    .title("건돌로그 제목" + i)
+                    .content("내용" + i)
+                    .build();
+            }).collect(Collectors.toList());
 
-        Post post2 = Post.builder()
-            .title("foo2")
-            .content("bar")
-            .createdDate(LocalDateTime.now())
-            .updatedDate(LocalDateTime.now())
-            .build();
+        postRepository.saveAll(requestPosts);
 
-        postRepository.save(post1);
-        postRepository.save(post2);
         // when
 
-        List<PostResponse> posts = postService.getList();
+        List<PostResponse> posts = postService.getList(0); // application.yml에서 시작 을 1로 설정 가능
         // then
-        org.junit.jupiter.api.Assertions.assertEquals(2, posts.size());
+        assertEquals(5, posts.size());
+        assertEquals("건돌로그 제목1", posts.get(0).getTitle());
     }
 }
-
-// 응답 클래스를 만들어야 하는 이유 (1)
-// getTitle() -> subString(0,10)
-// 후에 다른 기능을 만드는데 getTitle()에서 위의 정책이 적용되면 문제가 된다
-// Getter에는 서비스의 정책을 넣지 말라
-// 응답 전용 클래스를 만들어주는 것이 좋다
 
 // Controller -> WebPostService (Response를 위한 서비스) -> Repository
 //               PostService (다른 서비스와 통신하기 위한 서비스)
@@ -127,3 +120,5 @@ class PostServiceTest {
 // Request, Response
 
 // 하드 코딩 절대하지마 --> postService.get(1L) (X) -> postService.get(post.getId()) (O)
+
+// Pageable 객체

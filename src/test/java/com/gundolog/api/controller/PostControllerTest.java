@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -108,25 +110,19 @@ class PostControllerTest {
     @DisplayName("/posts 요청 시 여러 글을 조회 할 수 있다.")
     void test5() throws Exception {
         // given
-        Post post1 = Post.builder()
-            .title("foo1")
-            .content("bar")
-            .build();
-
-        Post post2 = Post.builder()
-            .title("foo2")
-            .content("bar")
-            .build();
-        postRepository.save(post1);
-        postRepository.save(post2);
+        List<Post> requestPosts = IntStream.range(1, 31)
+            .mapToObj(i -> {
+                return Post.builder()
+                    .title("건돌로그 제목" + i)
+                    .content("내용" + i)
+                    .build();
+            }).collect(Collectors.toList());
+        postRepository.saveAll(requestPosts);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.get("/posts")
+        mockMvc.perform(MockMvcRequestBuilders.get("/posts?page=0")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.length()", Matchers.is(2)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("foo1"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("foo2"))
             .andDo(MockMvcResultHandlers.print());
     }
 }

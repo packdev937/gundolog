@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -42,8 +45,13 @@ public class PostService {
             .build();
     }
 
-    public List<PostResponse> getList() {
-        return postRepository.findAll().stream()
+    public List<PostResponse> getList(int page) {
+//        Pageable pageable = PageRequest.of(page, 5,
+//            Sort.by(Order.desc("id"))); // page 번호, 페이지 당 포스트 개수
+        Pageable pageable = PageRequest.of(page, 5,
+            Sort.by("id")); // page 번호, 페이지 당 포스트 개수
+
+        return postRepository.findAll(pageable).stream()
             .map(PostResponse::new)
             .collect(Collectors.toList());
     }

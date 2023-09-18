@@ -12,6 +12,12 @@ spring:
       hibernate:
         format_sql: true
 
+
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
 logging:
   level:
     org.hibernate.sql: debug
