@@ -117,16 +117,18 @@ class PostControllerTest {
             .mapToObj(i -> {
                 return Post.builder()
                     .title("건돌로그 제목" + i)
-                    .content("내용" + i)
-                    .build();
+                    .content("내용 " + i)
+                   .build();
             }).collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
 
         // then
-        mockMvc.perform(get("/posts?page=1&size=5")
+        mockMvc.perform(get("/posts?page=1&size=10")
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.length()").value((5)))
+            .andExpect(jsonPath("$.length()").value((10)))
+            .andExpect(jsonPath("$[0].title").value("건돌로그 제목30"))
+            .andExpect(jsonPath("$[0].content").value("내용 30"))
             .andDo(print());
     }
 }
