@@ -17,6 +17,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return jpaQueryFactory.selectFrom(QPost.post)
             .limit(10)
             .offset((long) (page - 1) * 10)
+            .orderBy(QPost.post.id.desc())
             .fetch();
     }
 }
