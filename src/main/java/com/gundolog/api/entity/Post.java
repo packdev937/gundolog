@@ -38,4 +38,13 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
+    public void change(String title, String content) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }
