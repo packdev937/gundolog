@@ -3,13 +3,13 @@ package com.gundolog.api.service;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -43,15 +43,15 @@ public class PostService {
             .build();
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
-//        Pageable pageable = PageRequest.of(page, 5,
-//            Sort.by(Order.desc("id"))); // page 번호, 페이지 당 포스트 개수
-
-        return postRepository.findAll(pageable).stream()
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postRepository.getList(postSearch).stream()
             .map(PostResponse::new)
             .collect(Collectors.toList());
     }
 }
+
+//        Pageable pageable = PageRequest.of(page, 5,
+//            Sort.by(Order.desc("id"))); // page 번호, 페이지 당 포스트 개수
 
 //        return postRepository.findAll().stream()
 //            .map(post -> PostResponse.builder()

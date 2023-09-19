@@ -1,11 +1,12 @@
 package com.gundolog.api.service;
 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +18,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 
 @SpringBootTest
 class PostServiceTest {
@@ -108,12 +105,16 @@ class PostServiceTest {
 
         postRepository.saveAll(requestPosts);
 
-        Pageable pageable = PageRequest.of(0,5, Sort.by(Direction.DESC,"id"));
+        PostSearch postSearch = PostSearch.builder()
+            .page(1)
+            .size(10)
+            .build();
         // when
 
-        List<PostResponse> posts = postService.getList(pageable); // application.yml에서 시작 을 1로 설정 가능
+        List<PostResponse> posts = postService.getList(
+            postSearch); // application.yml에서 시작 을 1로 설정 가능
         // then
-        assertEquals(5, posts.size());
+        assertEquals(10, posts.size());
         assertEquals("건돌로그 제목30", posts.get(0).getTitle());
     }
 }
