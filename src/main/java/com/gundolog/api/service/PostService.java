@@ -3,6 +3,7 @@ package com.gundolog.api.service;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostEdit;
 import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -48,6 +50,15 @@ public class PostService {
             .map(PostResponse::new)
             .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("존재하지 않는 글입니다.")
+        );
+
+        post.change(postEdit.getTitle(), postEdit.getContent());
+    }
 }
 
 //        Pageable pageable = PageRequest.of(page, 5,
@@ -58,3 +69,5 @@ public class PostService {
 //                .id(post.getId())
 //                .title(post.getTitle())
 //                .content(post.getContent()).build()).collect(Collectors.toList());
+
+// Custom Exception
