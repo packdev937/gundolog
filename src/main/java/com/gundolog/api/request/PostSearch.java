@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class PostSearch {
 
+    private static final int MAX_SIZE = 2000;
+
     @Builder.Default
     private int page = 1;
     @Builder.Default
@@ -18,7 +20,7 @@ public class PostSearch {
     }
 
     public long getOffset() {
-        return (long) (Math.min(this.page, 1) - 1) * Math.min(size, 2000);
+        return (long) (Math.max(this.page, 1) - 1) * Math.min(size, MAX_SIZE);
     }
 }
 

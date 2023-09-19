@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostEdit;
 import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import java.time.LocalDateTime;
@@ -144,12 +145,32 @@ class PostServiceTest {
         assertEquals(10, posts.size());
         assertEquals("건돌로그 제목30", posts.get(0).getTitle());
     }
+
+    @Test
+    @DisplayName("게시글 제목 수정")
+    void test6() {
+        // given
+        Post post = Post.builder()
+            .title("건돌로그")
+            .content("내용내용")
+            .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+            .title("호돌로그")
+            .build();
+
+        // when
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+            .orElseThrow(() -> new RuntimeException("글이 존재하지 않습니다. " + post.getId()));
+
+        assertEquals("호돌로그", changedPost.getTitle());
+        assertEquals("내용내용", changedPost.getContent());
+    }
 }
-
-// Controller -> WebPostService (Response를 위한 서비스) -> Repository
-//               PostService (다른 서비스와 통신하기 위한 서비스)
-
-// 클래스에 대한 분리
-// Request, Response
 
 // Pageable 객체
