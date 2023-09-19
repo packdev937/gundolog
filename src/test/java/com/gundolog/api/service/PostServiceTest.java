@@ -117,6 +117,33 @@ class PostServiceTest {
         assertEquals(10, posts.size());
         assertEquals("건돌로그 제목30", posts.get(0).getTitle());
     }
+
+    @Test
+    @DisplayName("PageSearch에 값이 전달 안됐을 때는 기본 값으로 대체된다")
+    void test5() {
+        // given
+        List<Post> requestPosts = IntStream.range(1, 31)
+            .mapToObj(i -> {
+                return Post.builder()
+                    .title("건돌로그 제목" + i)
+                    .content("내용" + i)
+                    .build();
+            }).collect(Collectors.toList());
+
+        postRepository.saveAll(requestPosts);
+
+        PostSearch postSearch = PostSearch.builder()
+            .size(10)
+            .build();
+
+        // when
+        List<PostResponse> posts = postService.getList(
+            postSearch);
+
+        // then
+        assertEquals(10, posts.size());
+        assertEquals("건돌로그 제목30", posts.get(0).getTitle());
+    }
 }
 
 // Controller -> WebPostService (Response를 위한 서비스) -> Repository
@@ -124,7 +151,5 @@ class PostServiceTest {
 
 // 클래스에 대한 분리
 // Request, Response
-
-// 하드 코딩 절대하지마 --> postService.get(1L) (X) -> postService.get(post.getId()) (O)
 
 // Pageable 객체
