@@ -18,7 +18,7 @@ public class PostSearch {
     }
 
     public long getOffset() {
-        return (long) (this.page - 1) * size;
+        return (long) (Math.min(this.page, 1) - 1) * Math.min(size, 2000);
     }
 }
 
