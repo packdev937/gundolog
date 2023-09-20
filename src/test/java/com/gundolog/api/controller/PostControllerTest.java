@@ -1,6 +1,7 @@
 package com.gundolog.api.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostEdit;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,6 +37,9 @@ class PostControllerTest {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     // 다른 테스트의 수행에 의해 테스트 결과가 달라지면 안되기 때문에
     @BeforeEach
@@ -131,7 +136,37 @@ class PostControllerTest {
             .andExpect(jsonPath("$[0].content").value("내용 30"))
             .andDo(print());
     }
+
+    @Test
+    @DisplayName("글 내용 수정")
+    void test6() throws Exception {
+        // given
+        Post post = Post.builder()
+            .title("건돌로그")
+            .content("내용내용")
+            .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+            .title("건돌로그")
+            .content("가나다라")
+            .build();
+
+        // then
+        mockMvc.perform(patch("/posts/{postID}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postEdit)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("건돌로그"))
+            .andExpect(jsonPath("$.content").value("가나다라"))
+            .andDo(print());
+
+        // NoArgsConstructor가 있으니간 에러가 안난
+    }
 }
 
 // jsonPath() 메서드의 여러 함수
 // Matchers()와 MockMvc는 어떻게 동작하는가?
+// ObjectMapper와 직렬화 https://da-nyee.github.io/posts/woowacourse-why-the-default-constructor-is-needed/
+
+// 자바의 직렬화와 역직렬화
