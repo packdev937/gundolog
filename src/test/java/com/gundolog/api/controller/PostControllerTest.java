@@ -1,5 +1,6 @@
 package com.gundolog.api.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -160,8 +161,23 @@ class PostControllerTest {
             .andExpect(jsonPath("$.title").value("건돌로그"))
             .andExpect(jsonPath("$.content").value("가나다라"))
             .andDo(print());
+    }
 
-        // NoArgsConstructor가 있으니간 에러가 안난
+    @Test
+    @DisplayName("글 내용 수정")
+    void test7() throws Exception {
+        // given
+        Post post = Post.builder()
+            .title("건돌로그")
+            .content("가나다라")
+            .build();
+        postRepository.save(post);
+
+        // then
+        mockMvc.perform(delete("/posts/{postID}", post.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print());
     }
 }
 
@@ -170,3 +186,4 @@ class PostControllerTest {
 // ObjectMapper와 직렬화 https://da-nyee.github.io/posts/woowacourse-why-the-default-constructor-is-needed/
 
 // 자바의 직렬화와 역직렬화
+// NoArgsConstructor가 있으니간 에러가 안난다.
