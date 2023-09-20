@@ -47,4 +47,17 @@ public class Post {
             this.content = content;
         }
     }
+
+    public PostEditor.PostEditorBuilder toEditor() {
+        // 여기 있는건 디폴트 값인가?
+        return PostEditor.builder()
+            .title(title)
+            .content(content);
+    }
+
+    public Post edit(PostEditor postEditor) {
+        title = postEditor.getTitle();
+        content = postEditor.getContent();
+        return this;
+    }
 }

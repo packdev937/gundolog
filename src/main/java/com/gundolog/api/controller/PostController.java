@@ -1,6 +1,7 @@
 package com.gundolog.api.controller;
 
 import com.gundolog.api.request.PostCreate;
+import com.gundolog.api.request.PostEdit;
 import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import com.gundolog.api.service.PostService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +37,15 @@ public class PostController {
 
     // 글이 너무 많 경우 -> 비용이 많이 들고, DB글 모두를 조회하는 경우 DB가 뻗을 수 있으며, 시간, 트래픽 비용등이 많이 발생한다
     @GetMapping("/posts")
-    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch){
+    public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
+    }
+
+    @PatchMapping("/posts/{postId}")
+    public PostResponse edit(@PathVariable(name = "postId") Long id,
+        @RequestBody @Valid PostEdit postEdit) {
+        return postService.edit(id, postEdit);
     }
 }
 
-// @RequestParam과 @PathVariable의 차이
+// @RequestParam과 @PathVariable의 차이 @ModelAttribute @RequestBody

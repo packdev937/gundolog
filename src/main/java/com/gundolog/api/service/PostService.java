@@ -1,6 +1,7 @@
 package com.gundolog.api.service;
 
 import com.gundolog.api.entity.Post;
+import com.gundolog.api.entity.PostEditor;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.request.PostEdit;
@@ -52,12 +53,27 @@ public class PostService {
     }
 
     @Transactional
-    public void edit(Long id, PostEdit postEdit) {
+    public PostResponse edit(Long id, PostEdit postEdit) {
         Post post = postRepository.findById(id).orElseThrow(
             () -> new IllegalArgumentException("존재하지 않는 글입니다.")
         );
 
-        post.change(postEdit.getTitle(), postEdit.getContent());
+        // null에 대한 검증이 필요
+
+        PostEditor.PostEditorBuilder postEditorBuilder = post.toEditor();
+
+        PostEditor postEditor = postEditorBuilder
+            .title(postEdit.getTitle())
+            .content(postEdit.getContent())
+            .build();
+
+        Post editedPost = post.edit(postEditor);
+        return PostResponse.builder()
+            .id(editedPost.getId())
+            .title(editedPost.getTitle())
+            .content(editedPost.getContent())
+            .build();
+
     }
 }
 
