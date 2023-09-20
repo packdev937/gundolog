@@ -197,6 +197,22 @@ class PostServiceTest {
         assertEquals("건돌로그", changedPost.getTitle());
         assertEquals("용내용내", changedPost.getContent());
     }
-}
 
-// Pageable 객체
+    @Test
+    @DisplayName("게시글 삭제")
+    void test8() {
+        // given
+        Post post = Post.builder()
+            .title("삭제될 제목")
+            .content("삭제될 내용")
+            .build();
+
+        postRepository.save(post);
+
+        // when
+        postService.delete(post.getId());
+
+        // tehn
+        assertEquals(0, postRepository.count());
+    }
+}
