@@ -29,6 +29,9 @@ dependencies {
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-core'
 
+    // Swagger Dependency
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
 
