@@ -1,28 +1,29 @@
 package com.gundolog.api.response;
 
 /*
-* {
-*   "code" : "400",
-*   "message" : "잘못된 요청입니다."
-*   "validation" : {
-*       "title" : "제목을 입력해주세요."
-*    }
-* }
-* */
+ * {
+ *   "code" : "400",
+ *   "message" : "잘못된 요청입니다."
+ *   "validation" : {
+ *       "title" : "제목을 입력해주세요."
+ *    }
+ * }
+ * */
 
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
+// @JsonInclude(value = Include.NON_EMPTY) // 비어있지 않은 값만 내보내겠다
 public class ErrorResponse {
+
     private final String code;
     private final String message;
     private final Map<String, String> validation = new HashMap<>();
 
-    public void addValidation(String filedName, String errorMessage){
+    public void addValidation(String filedName, String errorMessage) {
         this.validation.put(filedName, errorMessage);
     }
 
