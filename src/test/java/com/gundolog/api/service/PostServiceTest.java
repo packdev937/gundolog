@@ -2,8 +2,10 @@ package com.gundolog.api.service;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.gundolog.api.entity.Post;
+import com.gundolog.api.exception.PostNotFoundException;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.request.PostEdit;
@@ -214,5 +216,23 @@ class PostServiceTest {
 
         // tehn
         assertEquals(0, postRepository.count());
+    }
+
+    @Test
+    @DisplayName("글 조회 예외처리")
+    void test9() {
+        // given
+        Post post = Post.builder()
+            .title("건돌맨")
+            .content("가나다라")
+            .build();
+        postRepository.save(post);
+
+        // expected
+        PostNotFoundException e = assertThrows(PostNotFoundException.class, () -> {
+            postService.get(post.getId() + 1L);
+        }, "예외 처리가 잘못됨");
+
+        assertEquals("존재하지 않는 글입니다.", e.getMessage());
     }
 }

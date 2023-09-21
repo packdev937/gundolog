@@ -2,15 +2,14 @@ package com.gundolog.api.exception;
 
 public class PostNotFoundException extends RuntimeException {
 
+    private static final String MESSAGE = "존재하지 않는 글입니다.";
+
+
     public PostNotFoundException() {
-        super();
+        super(MESSAGE);
     }
 
-    public PostNotFoundException(String message) {
-        super(message);
-    }
-
-    public PostNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public PostNotFoundException(Throwable cause) {
+        super(MESSAGE, cause);
     }
 }

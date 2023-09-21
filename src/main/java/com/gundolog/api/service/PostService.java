@@ -2,6 +2,7 @@ package com.gundolog.api.service;
 
 import com.gundolog.api.entity.Post;
 import com.gundolog.api.entity.PostEditor;
+import com.gundolog.api.exception.PostNotFoundException;
 import com.gundolog.api.repository.PostRepository;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.request.PostEdit;
@@ -36,7 +37,7 @@ public class PostService {
 
     public PostResponse get(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-            () -> new IllegalArgumentException("존재하지 않는 글입니다")
+            PostNotFoundException::new
         );
 
         return PostResponse.builder()
