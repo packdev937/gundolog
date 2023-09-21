@@ -36,9 +36,7 @@ public class PostService {
     }
 
     public PostResponse get(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(
-            PostNotFoundException::new
-        );
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         return PostResponse.builder()
             .title(post.getTitle())
@@ -55,9 +53,7 @@ public class PostService {
 
     @Transactional
     public PostResponse edit(Long id, PostEdit postEdit) {
-        Post post = postRepository.findById(id).orElseThrow(
-            () -> new IllegalArgumentException("존재하지 않는 글입니다.")
-        );
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
 
         // null에 대한 검증이 필요
 
@@ -77,9 +73,7 @@ public class PostService {
     }
 
     public void delete(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(
-            () -> new IllegalArgumentException("존재하지 않는 글입니다.")
-        );
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         postRepository.delete(post);
     }
