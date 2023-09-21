@@ -5,6 +5,11 @@ import com.gundolog.api.request.PostEdit;
 import com.gundolog.api.request.PostSearch;
 import com.gundolog.api.response.PostResponse;
 import com.gundolog.api.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,38 +21,84 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1")
 public class PostController {
 
     private final PostService postService;
 
+    @Operation(summary = "글 작성 요청", description = "HTTP Body를 토대로 글이 작성됩니다.", tags = {
+        "PostController"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+            content = @Content(schema = @Schema(implementation = PostResponse.class))),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PostMapping("/posts")
     public void post(@RequestBody @Valid PostCreate postCreate) {
         postService.write(postCreate);
         return;
     }
 
+    @Operation(summary = "글 조회 요청", description = "해당하는 게시글 ID의 글이 조회됩니다.", tags = {
+        "PostController"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+            content = @Content(schema = @Schema(implementation = PostResponse.class))),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @GetMapping("/posts/{postId}")
     public PostResponse get(@PathVariable(name = "postId") Long id) {
         return postService.get(id);
     }
 
-    // 글이 너무 많 경우 -> 비용이 많이 들고, DB글 모두를 조회하는 경우 DB가 뻗을 수 있으며, 시간, 트래픽 비용등이 많이 발생한다
+    @Operation(summary = "모든 글 조회 요청", description = "모든 글이 페이징 처리 되어 조회됩니다.", tags = {
+        "PostController"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+            content = @Content(schema = @Schema(implementation = PostResponse.class))),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @GetMapping("/posts")
     public List<PostResponse> getList(@ModelAttribute PostSearch postSearch) {
         return postService.getList(postSearch);
     }
 
+    @Operation(summary = "글 수정 요청", description = "해당하는 게시글 ID의 글이 HTTP Body에 내용으로 수정됩니다.", tags = {
+        "PostController"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+            content = @Content(schema = @Schema(implementation = PostResponse.class))),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PatchMapping("/posts/{postId}")
     public PostResponse edit(@PathVariable(name = "postId") Long id,
         @RequestBody @Valid PostEdit postEdit) {
         return postService.edit(id, postEdit);
     }
 
+    @Operation(summary = "글 삭제 요청", description = "해당하는 게시글 ID의 글이 삭제됩니다.", tags = {
+        "PostController"})
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+            content = @Content(schema = @Schema(implementation = PostResponse.class))),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable(name = "postId") Long id) {
         postService.delete(id);
