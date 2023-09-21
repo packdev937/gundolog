@@ -124,7 +124,7 @@ class PostControllerTest {
                 return Post.builder()
                     .title("건돌로그 제목" + i)
                     .content("내용 " + i)
-                   .build();
+                    .build();
             }).collect(Collectors.toList());
         postRepository.saveAll(requestPosts);
 
@@ -177,6 +177,32 @@ class PostControllerTest {
         mockMvc.perform(delete("/posts/{postID}", post.getId())
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 삭제")
+    void test8() throws Exception {
+        mockMvc.perform(delete("/posts/{postId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정")
+    void test9() throws Exception {
+        // given
+        PostEdit postEdit = PostEdit.builder()
+            .title("건돌로그")
+            .content("가나다라")
+            .build();
+
+        // then
+        mockMvc.perform(patch("/posts/{postId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postEdit)))
+            .andExpect(status().isNotFound())
             .andDo(print());
     }
 }

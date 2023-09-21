@@ -115,7 +115,7 @@ class PostServiceTest {
         // when
 
         List<PostResponse> posts = postService.getList(
-            postSearch); // application.yml에서 시작 을 1로 설정 가능
+            postSearch);
         // then
         assertEquals(10, posts.size());
         assertEquals("건돌로그 제목30", posts.get(0).getTitle());
@@ -214,12 +214,12 @@ class PostServiceTest {
         // when
         postService.delete(post.getId());
 
-        // tehn
+        // then
         assertEquals(0, postRepository.count());
     }
 
     @Test
-    @DisplayName("글 조회 예외처리")
+    @DisplayName("존재하지 않는 게시글 조회")
     void test9() {
         // given
         Post post = Post.builder()
