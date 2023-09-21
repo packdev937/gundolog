@@ -1,8 +1,10 @@
 package com.gundolog.api.controller;
 
+import com.gundolog.api.exception.GundologException;
 import com.gundolog.api.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,6 +31,22 @@ public class ExceptionController {
         }
         return response;
     }
+
+    @ResponseBody
+    @ExceptionHandler(GundologException.class)
+    public ResponseEntity<ErrorResponse> postNotFoundExceptionHandler(GundologException e) {
+        ErrorResponse body = ErrorResponse.builder()
+            .code(String.valueOf(e.statusCode()))
+            .message(e.getMessage())
+            .build();
+
+        ResponseEntity<ErrorResponse> response = ResponseEntity.status(e.statusCode())
+            .body(body);
+
+        return response;
+    }
 }
 
 // ControllerAdvice란?
+
+// ResponseEntity로 감싸주면 원하는 status code를 설정해줄 수 있음
