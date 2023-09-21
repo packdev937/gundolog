@@ -15,7 +15,7 @@ public class SwaggerConfig {
     public GroupedOpenApi notionApi() {
         return GroupedOpenApi.builder()
             .group("Gundolog API v1")
-            .pathsToMatch("/v1/**")
+            .pathsToMatch("/**")
             .build();
     }
 
