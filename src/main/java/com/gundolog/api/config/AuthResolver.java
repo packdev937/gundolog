@@ -22,13 +22,12 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info(">>> resolveArgument()");
-        String accessToken = webRequest.getParameter("accessToken");
-        if (accessToken == null && !accessToken.equals("gundolog")) {
+        String accessToken = webRequest.getHeader("Authorization");
+        if (accessToken == null || accessToken.equals("")) {
             throw new UnAuthorizedException("권한이 없습니다.");
         }
         UserSession userSession = new UserSession();
-        userSession.name = "gundolog";
+        userSession.id = 1L;
         return userSession;
     }
 }

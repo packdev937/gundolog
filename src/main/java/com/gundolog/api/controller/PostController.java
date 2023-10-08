@@ -33,8 +33,8 @@ public class PostController {
 
     @GetMapping("/foo")
     public String foo(UserSession userSession){
-        log.info(">>>>{}", userSession.name);
-        return userSession.name;
+        log.info(">>>>> {}", userSession.id);
+        return "foo";
     }
 
     @Operation(summary = "글 작성 요청", description = "HTTP Body를 토대로 글이 작성됩니다.", tags = {
