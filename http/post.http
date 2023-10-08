@@ -3,3 +3,13 @@
 GET http://localhost:8080/foo
 Content-Type: application/json
 Authorization: asdf
+
+### 로그인
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "packdev937@gmail.com",
+  "password": "1234"
+}
