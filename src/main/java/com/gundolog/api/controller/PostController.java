@@ -1,5 +1,6 @@
 package com.gundolog.api.controller;
 
+import com.gundolog.api.config.data.UserSession;
 import com.gundolog.api.request.PostCreate;
 import com.gundolog.api.request.PostEdit;
 import com.gundolog.api.request.PostSearch;
@@ -29,6 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+
+    @GetMapping("/foo")
+    public String foo(UserSession userSession){
+        log.info(">>>>{}", userSession.name);
+        return userSession.name;
+    }
 
     @Operation(summary = "글 작성 요청", description = "HTTP Body를 토대로 글이 작성됩니다.", tags = {
         "PostController"})

@@ -78,14 +78,3 @@ public class PostService {
         postRepository.delete(post);
     }
 }
-
-//        Pageable pageable = PageRequest.of(page, 5,
-//            Sort.by(Order.desc("id"))); // page 번호, 페이지 당 포스트 개수
-
-//        return postRepository.findAll().stream()
-//            .map(post -> PostResponse.builder()
-//                .id(post.getId())
-//                .title(post.getTitle())
-//                .content(post.getContent()).build()).collect(Collectors.toList());
-
-// Custom Exception
