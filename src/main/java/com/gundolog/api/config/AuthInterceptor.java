@@ -11,10 +11,6 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
-        String accessToken = request.getParameter("accessToken");
-        if (accessToken != null && accessToken.equals("gundolog")) {
-            return true;
-        }
         throw new UnAuthorizedException("권한이 없습니다.");
     }
 
