@@ -1,6 +1,7 @@
 package com.gundolog.api.controller;
 
 import com.gundolog.api.request.Login;
+import com.gundolog.api.response.SessionResponse;
 import com.gundolog.api.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/auth/login")
-    public void login(@RequestBody Login login) {
-        authService.signin(login);
+    public SessionResponse login(@RequestBody Login login) {
+        String accessToken = authService.signin(login);
+        return new SessionResponse(accessToken);
     }
 }
