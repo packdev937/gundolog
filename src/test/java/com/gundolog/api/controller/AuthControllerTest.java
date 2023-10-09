@@ -1,12 +1,14 @@
 package com.gundolog.api.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gundolog.api.entity.Session;
 import com.gundolog.api.entity.User;
 import com.gundolog.api.repository.SessionRepository;
 import com.gundolog.api.repository.UserRepository;
@@ -91,6 +93,36 @@ class AuthControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.accessToken", Matchers.notNullValue()))
             .andDo(print());
+    }
 
+    @Test
+    @DisplayName("로그인 후 권한이 필요한 페이지에 접속한다")
+    void test3() throws Exception {
+        // given
+        User user = User.builder()
+            .email("test@test.com")
+            .name("test")
+            .password("1234")
+            .build();
+        Session session = user.addSession();
+        userRepository.save(user);
+
+        // when
+        mockMvc.perform(get("/foo")
+                .header("Authorization", session.getAccessToken())
+                .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그인 후 검증되지 않은 세션 값으로 권한이 필요한 페이지에 접근할 수 없다")
+    void test4() throws Exception {
+        // given
+        mockMvc.perform(get("/post")
+                .header("Authorization", "1234")
+                .contentType(APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(print());
     }
 }
