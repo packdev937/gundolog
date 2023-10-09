@@ -12,6 +12,6 @@ public class UnAuthorizedException extends GundologException {
 
     @Override
     public int statusCode() {
-        return 404;
+        return 401;
     }
 }
